@@ -24,12 +24,15 @@ class Hand {
   List<Card> get cards => _cards;
   final List<Card> _cards = [];
 
-  /// Whether the hand has [standed].
-  bool get standed => _standed;
+  /// Whether the hand has standed.
+  bool get hasStanded => _standed;
   bool _standed = false;
 
   /// Stand the hand
   void stand() {
+    if (cards.length < 2) {
+      throw Exception('Required to have 2 or more cards to stand.');
+    }
     _standed = true;
   }
 
@@ -85,6 +88,8 @@ class Hand {
   /// Throws an [ArgumentError] if [card] is joker.
   ///
   /// Throws an [Exception] if the [score] is 21 or more.
+  ///
+  /// Throws an [Exception] if the hand [hasStanded].
   void hit(Card card) {
     if (card.isJoker) {
       throw ArgumentError('Joker is not accepted.');
@@ -92,7 +97,13 @@ class Hand {
     if (score >= limit) {
       throw Exception('The hand cannot hit if 21 or more.');
     }
+    if (hasStanded) {
+      throw Exception('The hand cannot hit if already standed.');
+    }
     cards.add(card);
+    if (score >= limit) {
+      stand();
+    }
   }
 
   /// Whether the hand has blackjack.

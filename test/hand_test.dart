@@ -104,4 +104,49 @@ void main() {
     final hand = Hand();
     expect(() => hand.hit(Card(Suit.joker, 1)), throwsArgumentError);
   });
+
+  test('Throws Exception when the hand will hit even standed', () {
+    final hand = Hand();
+    hand.hit(Card.random(allowsJoker: false));
+    hand.hit(Card.random(allowsJoker: false));
+    hand.stand();
+    expect(() => hand.hit(Card.random(allowsJoker: false)), throwsException);
+  });
+
+  test('hasStanded is true if standed explicitly', () {
+    final hand = Hand();
+    hand.hit(Card.random(allowsJoker: false));
+    hand.hit(Card.random(allowsJoker: false));
+    hand.stand();
+    expect(hand.hasStanded, true);
+  });
+
+  test('hasStanded is true if 21', () {
+    final hand = Hand();
+    hand.hit(Card(Suit.clubs, 10));
+    hand.hit(Card(Suit.clubs, 10));
+    hand.hit(Card(Suit.clubs, 1));
+    expect(hand.score, 21);
+    expect(hand.hasStanded, true);
+  });
+
+  test('hasStanded is true if busted', () {
+    final hand = Hand();
+    hand.hit(Card(Suit.clubs, 10));
+    hand.hit(Card(Suit.clubs, 10));
+    hand.hit(Card(Suit.clubs, 2));
+    expect(hand.score, 22);
+    expect(hand.hasStanded, true);
+  });
+
+  test('throw Exception when stand if the has no cards', () {
+    final hand = Hand();
+    expect(() => hand.stand(), throwsException);
+  });
+
+  test('throw Exception when stand if the has no cards', () {
+    final hand = Hand();
+    hand.hit(Card.random(allowsJoker: false));
+    expect(() => hand.stand(), throwsException);
+  });
 }
