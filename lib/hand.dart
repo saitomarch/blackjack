@@ -24,12 +24,15 @@ class Hand {
   List<Card> get cards => _cards;
   final List<Card> _cards = [];
 
-  /// Whether the hand has [standed].
-  bool get standed => _standed;
+  /// Whether the hand has standed.
+  bool get hasStanded => _standed;
   bool _standed = false;
 
   /// Stand the hand
   void stand() {
+    if (cards.length < 2) {
+      throw Exception('Required to have 2 or more cards to stand.');
+    }
     _standed = true;
   }
 
@@ -47,38 +50,62 @@ class Hand {
   static const int limit = 21;
 
   /// The [score] of the hand.
-  ///
-  /// Returns hard score if [hard] is `true` (always ace is treated as 1).
-  /// Otherwise soft score.
-  int score({bool hard = false}) {
+  int get score {
     var retVal = 0;
     for (final card in cards) {
-      if (card.number > 10) {
-        retVal += 10;
-      } else {
-        retVal += card.number;
-      }
+      retVal += _score(card);
     }
-    if (!hard && hasAce && retVal + 10 <= limit) {
+    if (hasAce && retVal + 10 <= limit) {
       retVal += 10;
     }
     return retVal;
   }
 
-  /// Whether the hand [hasBusted].
-  bool get hasBusted => score() > limit;
-
-  /// Whether the score [isSoft] score.
-  bool get isSoft => score(hard: false) != score(hard: true);
-
-  /// Hits from a [card].
-  void hit(Card card) {
-    if (hasBusted) {
-      throw Exception('The hand cannot hit if busted.');
+  int get _hardScore {
+    var retVal = 0;
+    for (final card in cards) {
+      retVal += _score(card);
     }
-    cards.add(card);
+    return retVal;
   }
 
-  /// Whether the hand is blackjack.
-  bool get isBlackjack => score(hard: false) == limit && cards.length == 2;
+  int _score(Card card) {
+    if (card.number > 10) {
+      return 10;
+    } else {
+      return card.number;
+    }
+  }
+
+  /// Whether the hand [hasBusted].
+  bool get hasBusted => score > limit;
+
+  /// Whether the score [isSoft] score.
+  bool get isSoft => score != _hardScore;
+
+  /// Hits from a [card].
+  ///
+  /// Throws an [ArgumentError] if [card] is joker.
+  ///
+  /// Throws an [Exception] if the [score] is 21 or more.
+  ///
+  /// Throws an [Exception] if the hand [hasStanded].
+  void hit(Card card) {
+    if (card.isJoker) {
+      throw ArgumentError('Joker is not accepted.');
+    }
+    if (score >= limit) {
+      throw Exception('The hand cannot hit if 21 or more.');
+    }
+    if (hasStanded) {
+      throw Exception('The hand cannot hit if already standed.');
+    }
+    cards.add(card);
+    if (score >= limit) {
+      stand();
+    }
+  }
+
+  /// Whether the hand has blackjack.
+  bool get hasBlackjack => score == limit && cards.length == 2;
 }
