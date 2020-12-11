@@ -25,6 +25,7 @@ void main() {
     hand.hit(Card(Suit.clubs, 10));
     hand.hit(Card(Suit.diamonds, 10));
     expect(hand.score(hard: false), 20);
+    expect(hand.isSoft, false);
   });
 
   test('Score is valid (soft score)', () {
@@ -33,5 +34,14 @@ void main() {
     hand.hit(Card(Suit.diamonds, 9));
     expect(hand.score(hard: false), 20);
     expect(hand.score(hard: true), 10);
+    expect(hand.isSoft, true);
+  });
+
+  test('Score will be 20 if both are over 10, such as Jack, Queem or King', () {
+    final hand = Hand();
+    hand.hit(Card(Suit.hearts, 11));
+    hand.hit(Card(Suit.hearts, 12));
+    expect(hand.score(), isNot(23));
+    expect(hand.score(), 20);
   });
 }
