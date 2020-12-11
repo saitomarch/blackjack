@@ -24,7 +24,7 @@ void main() {
     final hand = Hand();
     hand.hit(Card(Suit.clubs, 10));
     hand.hit(Card(Suit.diamonds, 10));
-    expect(hand.score(hard: false), 20);
+    expect(hand.score, 20);
     expect(hand.isSoft, false);
   });
 
@@ -32,16 +32,35 @@ void main() {
     final hand = Hand();
     hand.hit(Card(Suit.clubs, 1));
     hand.hit(Card(Suit.diamonds, 9));
-    expect(hand.score(hard: false), 20);
-    expect(hand.score(hard: true), 10);
+    expect(hand.score, 20);
     expect(hand.isSoft, true);
   });
 
-  test('Score will be 20 if both are over 10, such as Jack, Queem or King', () {
+  test('Score will be 20 if both are over 10, such as Jack, Queen or King', () {
     final hand = Hand();
     hand.hit(Card(Suit.hearts, 11));
     hand.hit(Card(Suit.hearts, 12));
-    expect(hand.score(), isNot(23));
-    expect(hand.score(), 20);
+    expect(hand.score, isNot(23));
+    expect(hand.score, 20);
+    hand.hit(Card(Suit.hearts, 13));
+    expect(hand.score, isNot(36));
+    expect(hand.score, 30);
+  });
+
+  test('Treats as blackjack if card are Ace and 10/J/Q/K.', () {
+    final hand = Hand();
+    hand.hit(Card(Suit.spades, 1));
+    hand.hit(Card(Suit.spades, 10));
+    expect(hand.score, 21);
+    expect(hand.isBlackjack, true);
+  });
+
+  test('Not treats as blackjack if not Ace and 10/J/Q/K', () {
+    final hand = Hand();
+    hand.hit(Card(Suit.spades, 7));
+    hand.hit(Card(Suit.spades, 7));
+    hand.hit(Card(Suit.spades, 7));
+    expect(hand.score, 21);
+    expect(hand.isBlackjack, false);
   });
 }

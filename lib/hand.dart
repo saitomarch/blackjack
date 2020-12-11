@@ -73,7 +73,7 @@ class Hand {
 
   /// Hits from a [card].
   void hit(Card card) {
-    if (hasBusted) {
+    if (score(hard: false) >= limit) {
       throw Exception('The hand cannot hit if busted.');
     }
     cards.add(card);
