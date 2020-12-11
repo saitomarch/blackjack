@@ -1,8 +1,9 @@
 name: blackjack
-description: A new Flutter package project.
+description: A library which supports blackjack game
 version: 0.0.1
-author:
-homepage:
+author: SAITO Tomomi
+homepage: https://project-flora.net/
+publish_to: none
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -14,7 +15,6 @@ dependencies:
   pedantic: ^1.9.0
   playing_card_base:
     git: https://github.com/saitomarch/playing_card_base.git
-    publish_to: none
 
 dev_dependencies:
   flutter_test:
