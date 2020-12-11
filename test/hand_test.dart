@@ -52,7 +52,7 @@ void main() {
     hand.hit(Card(Suit.spades, 1));
     hand.hit(Card(Suit.spades, 10));
     expect(hand.score, 21);
-    expect(hand.isBlackjack, true);
+    expect(hand.hasBlackjack, true);
   });
 
   test('Not treats as blackjack if not Ace and 10/J/Q/K', () {
@@ -61,6 +61,47 @@ void main() {
     hand.hit(Card(Suit.spades, 7));
     hand.hit(Card(Suit.spades, 7));
     expect(hand.score, 21);
-    expect(hand.isBlackjack, false);
+    expect(hand.hasBlackjack, false);
+  });
+
+  test('Busts if overs 21', () {
+    final hand = Hand();
+    hand.hit(Card(Suit.clubs, 10));
+    hand.hit(Card(Suit.clubs, 10));
+    hand.hit(Card(Suit.clubs, 10));
+    expect(hand.score, 30);
+    expect(hand.hasBusted, true);
+  });
+
+  test('Not busts if 21', () {
+    final hand = Hand();
+    hand.hit(Card(Suit.clubs, 10));
+    hand.hit(Card(Suit.clubs, 10));
+    hand.hit(Card(Suit.clubs, 1));
+    expect(hand.score, 21);
+    expect(hand.hasBusted, false);
+  });
+
+  test('Throws exception if score is 21', () {
+    final hand = Hand();
+    hand.hit(Card(Suit.clubs, 10));
+    hand.hit(Card(Suit.clubs, 10));
+    hand.hit(Card(Suit.clubs, 1));
+    expect(hand.score, 21);
+    expect(() => hand.hit(Card.random(allowsJoker: false)), throwsException);
+  });
+
+  test('Throws exception if busted', () {
+    final hand = Hand();
+    hand.hit(Card(Suit.clubs, 10));
+    hand.hit(Card(Suit.clubs, 10));
+    hand.hit(Card(Suit.clubs, 2));
+    expect(hand.score, 22);
+    expect(() => hand.hit(Card.random(allowsJoker: false)), throwsException);
+  });
+
+  test('Throws ArgumentError if card is joker', () {
+    final hand = Hand();
+    expect(() => hand.hit(Card(Suit.joker, 1)), throwsArgumentError);
   });
 }
