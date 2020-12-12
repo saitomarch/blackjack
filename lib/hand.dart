@@ -28,6 +28,28 @@ class Hand {
   bool get hasStanded => _standed;
   bool _standed = false;
 
+  /// Whether the han can be splitted.
+  bool get canSplit {
+    if (cards.length != 2) {
+      return false;
+    }
+    return cards[0].number == cards[1].number;
+  }
+
+  /// Split hand
+  List<Hand> split() {
+    if (!canSplit) {
+      throw Exception('Unable to split hand.');
+    }
+    var retValue = <Hand>[];
+    for (final card in cards) {
+      var hand = Hand();
+      hand.hit(card);
+      retValue.add(hand);
+    }
+    return retValue;
+  }
+
   /// Stand the hand
   void stand() {
     if (cards.length < 2) {

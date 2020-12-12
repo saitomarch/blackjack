@@ -149,4 +149,50 @@ void main() {
     hand.hit(Card.random(allowsJoker: false));
     expect(() => hand.stand(), throwsException);
   });
+
+  test('Able to split if same number cards.', () {
+    final hand = Hand();
+    hand.hit(Card(Suit.hearts, 10));
+    hand.hit(Card(Suit.spades, 10));
+    expect(hand.canSplit, true);
+  });
+
+  test('Unable to split if not same number cards.', () {
+    final hand = Hand();
+    hand.hit(Card(Suit.clubs, 10));
+    hand.hit(Card(Suit.diamonds, 11));
+    expect(hand.canSplit, false);
+  });
+
+  test('Unable to split if not 2 cards.', () {
+    final hand = Hand();
+    hand.hit(Card(Suit.clubs, 5));
+    hand.hit(Card(Suit.spades, 5));
+    hand.hit(Card(Suit.hearts, 5));
+    expect(hand.canSplit, false);
+  });
+
+  test('Splits successfylly if same number 2 cards', () {
+    final hand = Hand();
+    hand.hit(Card(Suit.hearts, 10));
+    hand.hit(Card(Suit.spades, 10));
+    final hands = hand.split();
+    expect(hands[0].cards.first, hand.cards[0]);
+    expect(hands[1].cards.first, hand.cards[1]);
+  });
+
+  test('Throws exception when trying to split if not same number cards.', () {
+    final hand = Hand();
+    hand.hit(Card(Suit.clubs, 10));
+    hand.hit(Card(Suit.diamonds, 11));
+    expect(() => hand.split(), throwsException);
+  });
+
+  test('Throws exception when trying to split if not 2 cards.', () {
+    final hand = Hand();
+    hand.hit(Card(Suit.clubs, 5));
+    hand.hit(Card(Suit.spades, 5));
+    hand.hit(Card(Suit.hearts, 5));
+    expect(() => hand.split(), throwsException);
+  });
 }
