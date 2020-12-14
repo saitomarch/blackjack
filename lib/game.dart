@@ -63,7 +63,7 @@ class Game {
   Function(Player, Hand, Function(Command)) onAskCommand;
 
   /// Called whenever the game finished.
-  Function(void) onFinish;
+  Function() onFinish;
 
   /// Adds an [player]
   ///
@@ -126,7 +126,7 @@ class Game {
     var checkInsuranceCount = 0;
     for (final player in players) {
       if (player.canBuyInsurance) {
-        onBuyInsuranceAsked(player, (shouldBuy) {
+        onAskBuyInsurance(player, (shouldBuy) {
           if (shouldBuy) {
             player.buyInsurance();
           }
@@ -167,7 +167,7 @@ class Game {
     for (final player in players) {
       for (final hand in player.hands) {
         if (!hand.hasStanded) {
-          onCommandAsked(player, hand, (command) {
+          onAskCommand(player, hand, (command) {
             switch (command) {
               case Command.hit:
                 _hitHand(hand);
@@ -205,5 +205,6 @@ class Game {
       player.result(dealer);
     }
     _isPlaying = false;
+    onFinish();
   }
 }
