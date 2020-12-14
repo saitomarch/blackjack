@@ -85,15 +85,30 @@ class Game {
     players.remove(player);
   }
 
-  /// Reset the game.
+  /// Reset the game
   void reset() {
+    resetDeck();
+    resetPlayers();
+    _initialized = true;
+  }
+
+  /// Reset the deck
+  void resetDeck() {
+    if (_config.numberOfDecks > 0) {
+      _deck = Deck(multiplier: _config.numberOfDecks);
+    } else {
+      _deck = null;
+    }
+  }
+
+  /// Reset the game.
+  void resetPlayers() {
     if (onAskBuyInsurance == null || onAskCommand == null || onFinish == null) {
       Exception('Closures are required to implement.');
     }
     if (_isPlaying) {
       Exception('Unable to reset while the game is active');
     }
-    _initialized = true;
     dealer.reset();
     for (final player in players) {
       player.reset();
