@@ -28,6 +28,14 @@ class Hand {
   bool get hasStanded => _standed;
   bool _standed = false;
 
+  /// Whether the hand has been splitted
+  bool get splitted => _splitted;
+  bool _splitted = false;
+
+  /// Whether the hand has been doubled down.
+  bool get doubledDown => _doubledDown;
+  bool _doubledDown = false;
+
   /// Whether the han can be splitted.
   bool get canSplit {
     if (cards.length != 2) {
@@ -45,6 +53,7 @@ class Hand {
     for (final card in cards) {
       var hand = Hand();
       hand.hit(card);
+      hand._splitted = true;
       retValue.add(hand);
     }
     return retValue;
@@ -128,6 +137,26 @@ class Hand {
     }
   }
 
+  /// Double down the hand
+  void doubleDown(Card card) {
+    hit(card);
+    _doubledDown = true;
+    stand();
+  }
+
+  /// Whether the hand can double down
+  bool get canDoubleDown => cards.length == 2;
+
   /// Whether the hand has blackjack.
-  bool get hasBlackjack => score == limit && cards.length == 2;
+  bool get hasBlackjack => score == limit && cards.length == 2 && !splitted;
+
+  /// Whether the han can be surrendered.
+  bool get canSurrender => cards.length == 2 && !splitted;
+
+  /// Whether the hand has been surrendered.
+  bool get surrendered => _surrendered;
+  bool _surrendered = false;
+
+  /// Surrender the hand
+  void surrender() => _surrendered = true;
 }
